@@ -1,4 +1,26 @@
 #include "Tauler.h"
+IMAGE_NAME DeColorAFigura(ColorFigura color)
+{
+    switch (color)
+    {
+    case COLOR_GROC:
+        return GRAFIC_QUADRAT_GROC;
+    case COLOR_BLAUCEL:
+        return GRAFIC_QUADRAT_BLAUCEL;
+    case COLOR_MAGENTA:
+        return GRAFIC_QUADRAT_MAGENTA;
+    case COLOR_TARONJA:
+        return GRAFIC_QUADRAT_TARONJA;
+    case COLOR_BLAUFOSC:
+        return GRAFIC_QUADRAT_BLAUFOSC;
+    case COLOR_VERMELL:
+        return GRAFIC_QUADRAT_VERMELL;
+    case COLOR_VERD:
+        return GRAFIC_QUADRAT_VERD;
+    default:
+        return GRAFIC_NUM_MAX;
+    }
+}
 
 Tauler::Tauler()
 {
@@ -51,7 +73,7 @@ void Tauler::actualitzaTauler(ColorFigura tauler[MAX_FILA][MAX_COL], Figura& fig
 
 
 bool boreras(int col, int fila, int tamany, ColorFigura temp[][MAX_AMPLADA]) {
-    if (col < 0)
+    if (col < 1)
     {
         for (int i = 0; i < tamany; i++)
         {
@@ -62,18 +84,18 @@ bool boreras(int col, int fila, int tamany, ColorFigura temp[][MAX_AMPLADA]) {
         }
     }
 
-    if ((col + tamany) > MAX_COL)
+    if ((col + tamany) > MAX_COL + 1)
     {
         for (int i = 0; i < tamany; i++)
         {
-            if (temp[i][MAX_COL - col] != COLOR_NEGRE)
+            if (temp[i][MAX_COL - col + 1] != COLOR_NEGRE)
             {
                 return true;
             }
         }
     }
 
-    if ((fila + tamany) > MAX_FILA)
+    if ((fila + tamany) > MAX_FILA + 1)
     {
         for (int j = 0; j < tamany; j++)
         {
@@ -155,4 +177,20 @@ int Tauler::eliminarFiles()
         }
     }
     return nEliminades;
+}
+
+
+
+void Tauler::dibuixa()
+{
+    GraphicManager::getInstance()->drawSprite(GRAFIC_FONS, 0, 0, false);
+    GraphicManager::getInstance()->drawSprite(GRAFIC_TAULER, POS_X_TAULER, POS_Y_TAULER, false);
+    for (int i = 0; i < N_FILES_TAULER; i++)
+    {
+        for (int j = 0; j < N_COL_TAULER + 1; j++)
+        {
+            if (m_tauler[i][j] != COLOR_NEGRE)
+                GraphicManager::getInstance()->drawSprite(DeColorAFigura(m_tauler[i][j]), POS_X_TAULER + (j * MIDA_QUADRAT), POS_Y_TAULER + (i * MIDA_QUADRAT), false);
+        }
+    }
 }

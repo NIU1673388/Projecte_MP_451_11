@@ -1,8 +1,32 @@
 #include "Joc.h"
 #include <iostream>
+
 using namespace std;
 
-TipusFigura TipusAFigura(ColorFigura colorFigura)
+TipusFigura IntAFigura(int valor)
+{
+    switch (valor)
+    {
+    case 0:
+        return FIGURA_O;
+    case 1:
+        return FIGURA_I;
+    case 2:
+        return FIGURA_T;
+    case 3:
+        return FIGURA_L;
+    case 4:
+        return FIGURA_J;
+    case 5:
+        return FIGURA_Z;
+    case 6:
+        return FIGURA_S;
+    default:
+        return NO_FIGURA;
+    }
+}
+
+TipusFigura ColorAFigura(ColorFigura colorFigura)
 {
     switch (colorFigura)
     {
@@ -26,7 +50,26 @@ TipusFigura TipusAFigura(ColorFigura colorFigura)
 }
 
 
+void Joc::inicialitzaNormal()
+{
 
+    novaFigura();
+    for (int i = 0; i < MAX_FILA; i++)
+        for (int j = 0; j < MAX_COL; j++)
+            m_tauler.setCasella(COLOR_NEGRE, i, j);
+
+}
+
+void Joc::inicialitzaTest(string fitxerInicial, string fitxerFigura, string fitxerMoviments)
+{
+
+    ifstream fitxer(fitxerInicial);
+    if (fitxer.is_open())
+    {
+        
+    }
+
+}
 
 
 void Joc::inicialitza(const string& nomFitxer)
@@ -72,7 +115,7 @@ void Joc::inicialitza(const string& nomFitxer)
 
         m_figura.setCol(col - 1);
         m_figura.setFila(fila - 1);
-        m_figura.inicialitza(tipusFigura, col - 1, fila - 1);
+        m_figura.inicialitza(tipusFigura);
 
         for (int i = 0; i < orientacio; i++)
         {
@@ -139,7 +182,7 @@ void Joc::escriuTauler(const string& nomFitxer)
         {
             for (int j = 0; j < MAX_COL; j++)
             {
-                    fitxer << matriu_tauler[i][j] ;
+                fitxer << matriu_tauler[i][j];
             }
             fitxer << endl;
         }
@@ -165,7 +208,7 @@ void Joc::colocarFigura()
     }
 }
 
-int Joc::baixaFigura()
+int Joc::baixaFigura(bool& acabar)
 {
     int nEliminades = 0;
     Figura figura = m_figura;
@@ -175,9 +218,10 @@ int Joc::baixaFigura()
     if (!choca)
         m_figura.baixada();
     else {
+        acabar = true;
         colocarFigura();
         nEliminades = m_tauler.eliminarFiles();
-        m_figura.inicialitza(NO_FIGURA, 0, 0);
+        m_figura.inicialitza(NO_FIGURA);
     }
     return nEliminades;
 }
@@ -191,6 +235,7 @@ bool Joc::mouFigura(int dirX)
     if (m_tauler.chocaFigura(figura))
         return false;
     else {
+
         m_figura.movimentLateral(dirX);
         return true;
     }
@@ -207,5 +252,57 @@ bool Joc::giraFigura(DireccioGir direccio)
         return false;
     else
         m_figura.gir(direccio);
-        return true;
+    return true;
+}
+
+
+int Joc::baixaCop()
+{
+    int nEliminades = 0;
+    Figura figura = m_figura;
+    bool choca = false;
+
+    do
+    {
+        figura.baixada();
+        choca = m_tauler.chocaFigura(figura);
+
+        if (!choca)
+            m_figura.baixada();
+        else {
+            colocarFigura();
+            nEliminades = m_tauler.eliminarFiles();
+            m_figura.inicialitza(NO_FIGURA);
+        }
+    } while (!choca);
+    return nEliminades;
+}
+
+bool Joc::colisioFiguraTauler(Figura figura)
+{
+    return m_tauler.chocaFigura(figura);
+}
+
+void Joc::dibuixa()
+{
+    m_tauler.dibuixa();
+    m_figura.dibuixa();
+}
+
+void Joc::novaFigura()
+{
+    int valor = rand() % 7;
+    m_figura.inicialitza(IntAFigura(valor));
+    m_figura.setCol(5);
+    m_figura.setFila(0);
+
+}
+bool Joc::jocAcabat()
+{
+    bool trobat = false;
+    if (m_figura.getFila() - 1 <= 0)
+    {
+        trobat = true;
+    }
+    return trobat;
 }
