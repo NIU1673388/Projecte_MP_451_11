@@ -12,15 +12,25 @@ public:
 
     Joc() {};
     void escriuTauler(const string& nomFitxer);
+    void inicialitzaNormal();
+    void inicialitzaTest(string fitxerInicial, string fitxerFigura, string fitxerMoviments);
     void inicialitza(const string& nomFitxer);
     bool giraFigura(DireccioGir direccio);
+    int baixaCop();
+    bool colisioFiguraTauler(Figura figura);
+    bool jocAcabat();
+
+    void dibuixa();
+    void novaFigura();
     bool mouFigura(int dirX);
-    int baixaFigura();
+    int baixaFigura(bool& acabar);
     void colocarFigura();
 
 private:
     Tauler m_tauler;
     Figura m_figura;
+
+
 
 };
 

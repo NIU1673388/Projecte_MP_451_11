@@ -1,5 +1,28 @@
 #include "Figura.h"
 
+IMAGE_NAME ColorAFigura(ColorFigura color)
+{
+	switch (color)
+	{
+	case COLOR_GROC:
+		return GRAFIC_QUADRAT_GROC;
+	case COLOR_BLAUCEL:
+		return GRAFIC_QUADRAT_BLAUCEL;
+	case COLOR_MAGENTA:
+		return GRAFIC_QUADRAT_MAGENTA;
+	case COLOR_TARONJA:
+		return GRAFIC_QUADRAT_TARONJA;
+	case COLOR_BLAUFOSC:
+		return GRAFIC_QUADRAT_BLAUFOSC;
+	case COLOR_VERMELL:
+		return GRAFIC_QUADRAT_VERMELL;
+	case COLOR_VERD:
+		return GRAFIC_QUADRAT_VERD;
+	default:
+		return GRAFIC_NUM_MAX;
+	}
+}
+
 ColorFigura TipusAColor(TipusFigura tipus) {
 	switch (tipus)
 	{
@@ -62,7 +85,7 @@ void Figura::movimentLateral(int dirX) {
 }
 
 
-void Figura::inicialitza(TipusFigura figura, int col, int fila) {
+void Figura::inicialitza(TipusFigura figura) {
 
 	m_color = TipusAColor(figura);
 	ColorFigura matriu[MAX_AMPLADA][MAX_ALCADA];
@@ -174,13 +197,13 @@ void Figura::girHorari()
 {
 	transposar();
 
-		for (int i = 0; i < m_tamany; i++) {
-			for (int j = 0; j < m_tamany / 2; j++) {
-				ColorFigura temp = m_forma[i][j];
-				m_forma[i][j] = m_forma[i][m_tamany - 1 - j];
-				m_forma[i][m_tamany - 1 - j] = temp;
-			}
+	for (int i = 0; i < m_tamany; i++) {
+		for (int j = 0; j < m_tamany / 2; j++) {
+			ColorFigura temp = m_forma[i][j];
+			m_forma[i][j] = m_forma[i][m_tamany - 1 - j];
+			m_forma[i][m_tamany - 1 - j] = temp;
 		}
+	}
 }
 
 
@@ -188,7 +211,7 @@ void Figura::girAntihorari()
 {
 	transposar();
 
-	for (int j = 0; j < m_tamany; j++) 
+	for (int j = 0; j < m_tamany; j++)
 	{
 		for (int i = 0; i < m_tamany / 2; i++)
 		{
@@ -197,7 +220,7 @@ void Figura::girAntihorari()
 			m_forma[m_tamany - 1 - i][j] = temp;
 		}
 	}
-	
+
 }
 
 void Figura::gir(DireccioGir gir)
@@ -207,4 +230,17 @@ void Figura::gir(DireccioGir gir)
 	else
 		girAntihorari();
 
+}
+
+
+void Figura::dibuixa()
+{
+	for (int i = 0; i < m_tamany; i++)
+	{
+		for (int j = 0; j < m_tamany; j++)
+		{
+			if (m_forma[i][j] != COLOR_NEGRE)
+				GraphicManager::getInstance()->drawSprite(ColorAFigura(m_color), POS_X_TAULER + ((m_col + j) * MIDA_QUADRAT), POS_Y_TAULER + ((m_fila + i - 1) * MIDA_QUADRAT), false);
+		}
+	}
 }
